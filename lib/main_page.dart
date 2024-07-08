@@ -65,6 +65,8 @@ class _MainPageState extends State<MainPage> {
       ),
       body: _widgetOptions.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: Colors.red,
+        unselectedItemColor: Colors.blue,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),

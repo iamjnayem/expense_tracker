@@ -8,14 +8,22 @@ import 'login_page.dart';
 void main() => runApp(ExpenseTrackerApp());
 
 class ExpenseTrackerApp extends StatelessWidget {
+  const ExpenseTrackerApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Expense Tracker',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.blue, 
       ),
-      home: LoginPage(), // Start with the login page
+      home: Scaffold(
+        backgroundColor: const Color.fromARGB(255, 134, 189, 149), 
+        appBar: AppBar(
+          title: const Text('Expense Tracker'),
+        ),
+        body: LoginPage(), 
+      ),
     );
   }
 }

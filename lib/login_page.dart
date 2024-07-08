@@ -10,7 +10,7 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Login')),
+      appBar: AppBar(title: const Text('Login')),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
@@ -18,23 +18,23 @@ class LoginPage extends StatelessWidget {
           children: [
             TextField(
               controller: _emailController,
-              decoration: InputDecoration(labelText: 'Email'),
+              decoration: const InputDecoration(labelText: 'Email'),
             ),
             TextField(
               controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
+              decoration: const InputDecoration(labelText: 'Password'),
               obscureText: true,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                // Implement login logic
+                // have to implement login logic
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(builder: (context) => MainPage()),
                 );
               },
-              child: Text('Login'),
+              child: const Text('Login'),
             ),
             TextButton(
               onPressed: () {
@@ -43,7 +43,7 @@ class LoginPage extends StatelessWidget {
                   MaterialPageRoute(builder: (context) => RegisterPage()),
                 );
               },
-              child: Text('Register'),
+              child: const Text('Register'),
             ),
           ],
         ),
