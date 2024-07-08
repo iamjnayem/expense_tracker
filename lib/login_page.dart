@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:expense_tracker/main_page.dart';
+import 'package:expense_tracker/register_page.dart';
+
 
 class LoginPage extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();

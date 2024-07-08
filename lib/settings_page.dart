@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'database_helper.dart';
+import 'package:expense_tracker/database_helper.dart';
 
 class SettingsPage extends StatelessWidget {
   final TextEditingController _expenseCategoryController = TextEditingController();
@@ -22,7 +22,7 @@ class SettingsPage extends StatelessWidget {
                   'name': _expenseCategoryController.text,
                   'type': 'expense'
                 };
-                await DatabaseHelper.instance.insertCategory(row);
+                await DatabaseHelper().insertCategory(row);
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('Expense Category Added')),
                 );
@@ -42,7 +42,7 @@ class SettingsPage extends StatelessWidget {
                   'name': _incomeCategoryController.text,
                   'type': 'income'
                 };
-                await DatabaseHelper.instance.insertCategory(row);
+                await DatabaseHelper().insertCategory(row);
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('Income Category Added')),
                 );

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'home_page.dart';
-import 'expense_page.dart';
-import 'income_page.dart';
-import 'settings_page.dart';
-import 'login_page.dart';
+import 'package:expense_tracker/home_page.dart';
+import 'package:expense_tracker/expense_page.dart';
+import 'package:expense_tracker/income_page.dart';
+import 'package:expense_tracker/settings_page.dart';
+import 'package:expense_tracker/login_page.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -42,11 +42,16 @@ class _MainPageState extends State<MainPage> {
                     actions: [
                       TextButton(
                         onPressed: () {
-                          // Implement logout
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (context) => LoginPage()),
-                          );
+                          try {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => LoginPage()),
+                            );
+                          } catch (error) {
+                            // Handle navigation error
+                            print(error);
+                          }
                         },
                         child: Text("Logout"),
                       ),
@@ -66,11 +71,11 @@ class _MainPageState extends State<MainPage> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.expense),
+            icon: Icon(Icons.add),
             label: 'Expense',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.income),
+            icon: Icon(Icons.remove),
             label: 'Income',
           ),
           BottomNavigationBarItem(

@@ -1,5 +1,6 @@
+import 'package:expense_tracker/database_helper.dart';
 import 'package:flutter/material.dart';
-import 'database_helper.dart';
+
 
 class ExpensePage extends StatefulWidget {
   @override
@@ -25,7 +26,7 @@ class _ExpensePageState extends State<ExpensePage> {
               decoration: InputDecoration(labelText: 'Amount'),
               keyboardType: TextInputType.number,
               validator: (value) {
-                if (value.isEmpty) {
+                if (value!.isEmpty) {
                   return 'Please enter an amount';
                 }
                 return null;
@@ -40,7 +41,7 @@ class _ExpensePageState extends State<ExpensePage> {
               controller: _dateController,
               decoration: InputDecoration(labelText: 'Date'),
               onTap: () async {
-                DateTime date = DateTime(1900);
+                DateTime? date = DateTime(1900);
                 FocusScope.of(context).requestFocus(new FocusNode());
 
                 date = await showDatePicker(
@@ -49,19 +50,19 @@ class _ExpensePageState extends State<ExpensePage> {
                     firstDate: DateTime(1900),
                     lastDate: DateTime(2100));
 
-                _dateController.text = date.toIso8601String();
+                _dateController.text = date?.toIso8601String() ?? '';
               },
             ),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
-                if (_formKey.currentState.validate()) {
+                if (_formKey.currentState!.validate()) {
                   Map<String, dynamic> row = {
                     'amount': double.parse(_amountController.text),
                     'category': _categoryController.text,
                     'date': _dateController.text,
                   };
-                  await DatabaseHelper.instance.insertExpense(row);
+                  await DatabaseHelper().insertExpense(row);
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(content: Text('Expense Added')),
                   );
