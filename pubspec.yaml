@@ -11,6 +11,8 @@ dependencies:
     sdk: flutter
   sqflite: ^2.0.0+3
   path: ^1.8.0
+  crypto: ^3.0.1 
+  fl_chart: ^0.68.0
 
 dev_dependencies:
   flutter_test:
@@ -19,3 +21,4 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  

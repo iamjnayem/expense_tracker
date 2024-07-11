@@ -81,4 +81,14 @@ class DatabaseHelper {
     Database db = await database;
     return await db.query('categories', where: 'type = ?', whereArgs: [type]);
   }
+
+  Future<List<String>> getExpenseCategories() async {
+    Database db = await database;
+    List<Map<String, dynamic>> maps = await db.query('categories', where: 'type = ?', whereArgs: ['expense']);
+    List<String> categories = [];
+    for (var map in maps) {
+      categories.add(map['name']);
+    }
+    return categories;
+  }
 }
