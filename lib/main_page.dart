@@ -17,8 +17,8 @@ class _MainPageState extends State<MainPage> {
       expense: 10,
       income: 20,
     ),
-    ExpensePage(),
     IncomePage(),
+    ExpensePage(),
     SettingsPage(),
   ];
 
@@ -78,12 +78,13 @@ class _MainPageState extends State<MainPage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.add),
-            label: 'Expense',
+            label: 'Income',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.remove),
-            label: 'Income',
+            label: 'Expense',
           ),
+         
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
             label: 'Settings',
