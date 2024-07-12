@@ -1,5 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:crypto/crypto.dart';
+import 'dart:convert';
 
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
@@ -50,6 +52,13 @@ class DatabaseHelper {
         type TEXT
       )
     ''');
+    await db.execute('''
+    CREATE TABLE users (
+      id INTEGER PRIMARY KEY,
+      email TEXT UNIQUE,
+      password TEXT
+    )
+  ''');
   }
 
   Future<int> insertExpense(Map<String, dynamic> row) async {
@@ -84,11 +93,56 @@ class DatabaseHelper {
 
   Future<List<String>> getExpenseCategories() async {
     Database db = await database;
-    List<Map<String, dynamic>> maps = await db.query('categories', where: 'type = ?', whereArgs: ['expense']);
+    List<Map<String, dynamic>> maps =
+        await db.query('categories', where: 'type = ?', whereArgs: ['expense']);
     List<String> categories = [];
     for (var map in maps) {
       categories.add(map['name']);
     }
     return categories;
+  }
+
+  Future<int> registerUser(String email, String password) async {
+    Database db = await database;
+
+    
+    List<Map<String, dynamic>> existingUsers = await db.query(
+      'users',
+      where: 'email = ?',
+      whereArgs: [email],
+    );
+
+    if (existingUsers.isNotEmpty) {
+      throw Exception('email already exists');
+    }
+
+  
+    var bytes = utf8.encode(password);
+    var hash = sha256.convert(bytes);
+
+    
+    Map<String, dynamic> row = {
+      'email': email,
+      'password': hash.toString(),
+    };
+
+    return await db.insert('users', row);
+  }
+
+  Future<bool> loginUser(String email, String password) async {
+    Database db = await database;
+
+  
+    var bytes = utf8.encode(password);
+    var hash = sha256.convert(bytes);
+
+    
+    List<Map<String, dynamic>> users = await db.query(
+      'users',
+      where: 'email = ? AND password = ?',
+      whereArgs: [email, hash.toString()],
+    );
+
+    return users.isNotEmpty;
   }
 }
