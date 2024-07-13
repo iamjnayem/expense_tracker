@@ -146,7 +146,7 @@ class RegisterPage extends StatelessWidget {
               TextButton(
                 onPressed: () {
                   Navigator.pop(
-                      context); // Navigate back to the previous screen
+                      context); 
                 },
                 child: const Text(
                   'Already have an account? Login',

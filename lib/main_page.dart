@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:expense_tracker/home_page.dart';
 import 'package:expense_tracker/expense_page.dart';
@@ -17,29 +16,9 @@ class _MainPageState extends State<MainPage> {
   double _totalExpense = 0.0;
   double _totalIncome = 0.0;
 
-  @override
-  void initState() {
-    super.initState();
-    _fetchTotalExpenseAndIncome();
-  }
-
-  Future<void> _fetchTotalExpenseAndIncome() async {
-    final dbHelper = DatabaseHelper();
-    List<Map<String, dynamic>> expenses = await dbHelper.getExpenses();
-    List<Map<String, dynamic>> incomes = await dbHelper.getIncomes();
-
-    double totalExpense = expenses.fold(0, (sum, item) => sum + item['amount']);
-    double totalIncome = incomes.fold(0, (sum, item) => sum + item['amount']);
-
-    setState(() {
-      _totalExpense = totalExpense;
-      _totalIncome = totalIncome;
-    });
-  }
-
   static List<Widget> _widgetOptions(double totalExpense, double totalIncome) {
     return [
-      HomePage(expense: totalExpense, income: totalIncome),
+      HomePage(),
       IncomePage(),
       ExpensePage(),
       SettingsPage(),
@@ -77,7 +56,6 @@ class _MainPageState extends State<MainPage> {
                                   builder: (context) => LoginPage()),
                             );
                           } catch (error) {
-                            // Handle navigation error
                             print(error);
                           }
                         },
@@ -91,7 +69,8 @@ class _MainPageState extends State<MainPage> {
           )
         ],
       ),
-      body: _widgetOptions(_totalExpense, _totalIncome).elementAt(_selectedIndex),
+      body:
+          _widgetOptions(_totalExpense, _totalIncome).elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         selectedItemColor: Colors.red,
         unselectedItemColor: Colors.blue,
@@ -99,7 +78,6 @@ class _MainPageState extends State<MainPage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Home',
-            
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.add),
