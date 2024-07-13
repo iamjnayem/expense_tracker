@@ -102,6 +102,17 @@ class DatabaseHelper {
     return categories;
   }
 
+  Future<List<String>> getIncomeCategories() async {
+    Database db = await database;
+    List<Map<String, dynamic>> maps =
+        await db.query('categories', where: 'type = ?', whereArgs: ['income']);
+    List<String> categories = [];
+    for (var map in maps) {
+      categories.add(map['name']);
+    }
+    return categories;
+  }
+
   Future<int> registerUser(String email, String password) async {
     Database db = await database;
 

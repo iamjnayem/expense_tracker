@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'home_page.dart';
-import 'expense_page.dart';
-import 'income_page.dart';
-import 'settings_page.dart';
-import 'login_page.dart';
+import 'package:expense_tracker/login_page.dart';
+
 
 void main() => runApp(ExpenseTrackerApp());
 
