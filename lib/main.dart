@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:expense_tracker/login_page.dart';
 
-
-void main() => runApp(ExpenseTrackerApp());
+void main() => runApp(const ExpenseTrackerApp());
 
 class ExpenseTrackerApp extends StatelessWidget {
   const ExpenseTrackerApp({super.key});
@@ -11,15 +10,12 @@ class ExpenseTrackerApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Expense Tracker',
-      theme: ThemeData(
-        primarySwatch: Colors.blue, 
-      ),
       home: Scaffold(
-        backgroundColor: const Color.fromARGB(255, 134, 189, 149), 
         appBar: AppBar(
           title: const Text('Expense Tracker'),
+          backgroundColor: Colors.amberAccent,
         ),
-        body: LoginPage(), 
+        body: LoginPage(),
       ),
     );
   }
