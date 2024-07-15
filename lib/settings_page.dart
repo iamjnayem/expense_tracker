@@ -1,5 +1,8 @@
+
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:expense_tracker/database_helper.dart';
+import 'package:expense_tracker/providers/user_provider.dart';
 
 class SettingsPage extends StatelessWidget {
   final TextEditingController _expenseCategoryController = TextEditingController();
@@ -7,6 +10,8 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final userId = Provider.of<UserProvider>(context).userId;
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
@@ -20,7 +25,8 @@ class SettingsPage extends StatelessWidget {
               if (_expenseCategoryController.text.isNotEmpty) {
                 Map<String, dynamic> row = {
                   'name': _expenseCategoryController.text,
-                  'type': 'expense'
+                  'type': 'expense',
+                  'user_id': userId,
                 };
                 await DatabaseHelper().insertCategory(row);
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -40,7 +46,8 @@ class SettingsPage extends StatelessWidget {
               if (_incomeCategoryController.text.isNotEmpty) {
                 Map<String, dynamic> row = {
                   'name': _incomeCategoryController.text,
-                  'type': 'income'
+                  'type': 'income',
+                  'user_id': userId,
                 };
                 await DatabaseHelper().insertCategory(row);
                 ScaffoldMessenger.of(context).showSnackBar(

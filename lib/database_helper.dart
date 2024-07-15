@@ -34,7 +34,8 @@ class DatabaseHelper {
         id INTEGER PRIMARY KEY,
         amount REAL,
         category TEXT,
-        date TEXT
+        date TEXT,
+        user_id INTEGER
       )
     ''');
     await db.execute('''
@@ -42,14 +43,16 @@ class DatabaseHelper {
         id INTEGER PRIMARY KEY,
         amount REAL,
         category TEXT,
-        date TEXT
+        date TEXT,
+        user_id INTEGER
       )
     ''');
     await db.execute('''
       CREATE TABLE categories (
         id INTEGER PRIMARY KEY,
         name TEXT,
-        type TEXT
+        type TEXT,
+        user_id INTEGER
       )
     ''');
     await db.execute('''
@@ -76,25 +79,46 @@ class DatabaseHelper {
     return await db.insert('categories', row);
   }
 
-  Future<List<Map<String, dynamic>>> getExpenses() async {
-    Database db = await database;
-    return await db.query('expenses');
-  }
+  Future<List<Map<String, dynamic>>> getExpenses(int userId) async {
+  Database db = await database;
+  return await db.query(
+    'expenses',
+    where: 'user_id = ?',
+    whereArgs: [userId],
+  );
+}
 
-  Future<List<Map<String, dynamic>>> getIncomes() async {
-    Database db = await database;
-    return await db.query('incomes');
-  }
+Future<List<Map<String, dynamic>>> getIncomes(int userId) async {
+  Database db = await database;
+  return await db.query(
+    'incomes',
+    where: 'user_id = ?',
+    whereArgs: [userId],
+  );
+}
 
-  Future<List<Map<String, dynamic>>> getCategories(String type) async {
-    Database db = await database;
-    return await db.query('categories', where: 'type = ?', whereArgs: [type]);
-  }
+  // Future<List<Map<String, dynamic>>> getExpenses() async {
+  //   Database db = await database;
+  //   return await db.query('expenses');
+  // }
 
-  Future<List<String>> getExpenseCategories() async {
+  // Future<List<Map<String, dynamic>>> getIncomes() async {
+  //   Database db = await database;
+  //   return await db.query('incomes');
+  // }
+
+  // Future<List<Map<String, dynamic>>> getCategories(String type) async {
+  //   Database db = await database;
+  //   return await db.query('categories', where: 'type = ?', whereArgs: [type]);
+  // }
+
+  Future<List<String>> getExpenseCategories(int userId) async {
     Database db = await database;
-    List<Map<String, dynamic>> maps =
-        await db.query('categories', where: 'type = ?', whereArgs: ['expense']);
+    List<Map<String, dynamic>> maps = await db.query(
+      'categories',
+      where: 'type = ? AND user_id = ?',
+      whereArgs: ['expense', userId],
+    );
     List<String> categories = [];
     for (var map in maps) {
       categories.add(map['name']);
@@ -102,10 +126,14 @@ class DatabaseHelper {
     return categories;
   }
 
-  Future<List<String>> getIncomeCategories() async {
+
+  Future<List<String>> getIncomeCategories(int userId) async {
     Database db = await database;
-    List<Map<String, dynamic>> maps =
-        await db.query('categories', where: 'type = ?', whereArgs: ['income']);
+    List<Map<String, dynamic>> maps = await db.query(
+      'categories',
+      where: 'type = ? AND user_id = ?',
+      whereArgs: ['income', userId],
+    );
     List<String> categories = [];
     for (var map in maps) {
       categories.add(map['name']);

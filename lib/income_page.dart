@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:expense_tracker/database_helper.dart';
+import 'package:provider/provider.dart';
+import 'package:expense_tracker/providers/user_provider.dart';
 
 class IncomePage extends StatefulWidget {
   @override
@@ -12,8 +14,9 @@ class _IncomePageState extends State<IncomePage> {
   String? _selectedCategory;
   final TextEditingController _dateController = TextEditingController();
 
-  Future<List<String>> _fetchIncomeCategories() async {
-    var categories = await DatabaseHelper().getIncomeCategories();
+  Future<List<String>> _fetchIncomeCategories(BuildContext context) async {
+    int userId = Provider.of<UserProvider>(context, listen: false).userId;
+    var categories = await DatabaseHelper().getIncomeCategories(userId);
     return categories;
   }
 
@@ -24,7 +27,7 @@ class _IncomePageState extends State<IncomePage> {
       child: Form(
         key: _formKey,
         child: FutureBuilder<List<String>>(
-          future: _fetchIncomeCategories(),
+          future: _fetchIncomeCategories(context), // Pass context here
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return CircularProgressIndicator(); // Show loading indicator
@@ -97,6 +100,7 @@ class _IncomePageState extends State<IncomePage> {
                         'amount': double.parse(_amountController.text),
                         'category': _selectedCategory,
                         'date': _dateController.text,
+                        'user_id': Provider.of<UserProvider>(context, listen: false).userId, // include user_id
                       };
                       await DatabaseHelper().insertIncome(row);
                       ScaffoldMessenger.of(context).showSnackBar(

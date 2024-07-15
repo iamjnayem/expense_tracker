@@ -1,12 +1,16 @@
+
+import 'package:expense_tracker/login_page.dart';
 import 'package:flutter/material.dart';
-import 'package:expense_tracker/main_page.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:expense_tracker/main_page.dart';
 import 'package:expense_tracker/database_helper.dart';
+import 'package:expense_tracker/providers/user_provider.dart';
 
 class RegisterPage extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
 
   void _showErrorDialog(BuildContext context, String message) {
     showDialog(
@@ -100,12 +104,9 @@ class RegisterPage extends StatelessWidget {
                 onPressed: () async {
                   String email = _emailController.text.trim();
                   String password = _passwordController.text.trim();
-                  String confirmPassword =
-                      _confirmPasswordController.text.trim();
+                  String confirmPassword = _confirmPasswordController.text.trim();
 
-                  if (email.isEmpty ||
-                      password.isEmpty ||
-                      confirmPassword.isEmpty) {
+                  if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
                     _showErrorDialog(context, 'Please fill in all fields.');
                     return;
                   }
@@ -117,14 +118,24 @@ class RegisterPage extends StatelessWidget {
 
                   DatabaseHelper dbHelper = DatabaseHelper();
                   try {
-                    await dbHelper.registerUser(email, password);
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => MainPage()),
-                    );
+                    int userId = await dbHelper.registerUser(email, password);
+
+                    if (userId != 0) {
+                      SharedPreferences prefs = await SharedPreferences.getInstance();
+                      await prefs.setString('userId', userId.toString());
+                      Provider.of<UserProvider>(context, listen: false).setUserId(userId);
+
+                      Navigator.pushReplacement(
+                        context,
+                        // MaterialPageRoute(builder: (context) => MainPage()),
+                        MaterialPageRoute(builder: (context) => LoginPage()),
+
+                      );
+                    } else {
+                      _showErrorDialog(context, 'Registration failed. Please try again.');
+                    }
                   } catch (e) {
-                    _showErrorDialog(
-                        context, 'Registration failed. Please try again.');
+                    _showErrorDialog(context, 'Registration failed. Please try again.');
                   }
                 },
                 style: ElevatedButton.styleFrom(
@@ -145,8 +156,7 @@ class RegisterPage extends StatelessWidget {
               const SizedBox(height: 10),
               TextButton(
                 onPressed: () {
-                  Navigator.pop(
-                      context); 
+                  Navigator.pop(context);
                 },
                 child: const Text(
                   'Already have an account? Login',
@@ -164,3 +174,4 @@ class RegisterPage extends StatelessWidget {
     );
   }
 }
+

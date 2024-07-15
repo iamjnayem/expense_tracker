@@ -1,6 +1,8 @@
+
 import 'package:flutter/material.dart';
 import 'package:expense_tracker/database_helper.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:provider/provider.dart';
+import 'package:expense_tracker/providers/user_provider.dart';
 
 class ExpensePage extends StatefulWidget {
   @override
@@ -13,9 +15,9 @@ class _ExpensePageState extends State<ExpensePage> {
   String? _selectedCategory;
   final TextEditingController _dateController = TextEditingController();
 
-  Future<List<String>> _fetchExpenseCategories() async {
-    // Implement database query to fetch categories
-    var categories = await DatabaseHelper().getExpenseCategories();
+  Future<List<String>> _fetchExpenseCategories(BuildContext context) async {
+    int userId = Provider.of<UserProvider>(context, listen: false).userId;
+    var categories = await DatabaseHelper().getExpenseCategories(userId);
     return categories;
   }
 
@@ -26,7 +28,7 @@ class _ExpensePageState extends State<ExpensePage> {
       child: Form(
         key: _formKey,
         child: FutureBuilder<List<String>>(
-          future: _fetchExpenseCategories(),
+          future: _fetchExpenseCategories(context),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return CircularProgressIndicator(); // Show loading indicator
@@ -95,10 +97,12 @@ class _ExpensePageState extends State<ExpensePage> {
                 ElevatedButton(
                   onPressed: () async {
                     if (_formKey.currentState!.validate()) {
+                      int userId = Provider.of<UserProvider>(context, listen: false).userId;
                       Map<String, dynamic> row = {
                         'amount': double.parse(_amountController.text),
                         'category': _selectedCategory,
                         'date': _dateController.text,
+                        'user_id': userId, // Include user_id
                       };
                       await DatabaseHelper().insertExpense(row);
                       ScaffoldMessenger.of(context).showSnackBar(

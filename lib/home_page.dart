@@ -1,9 +1,8 @@
-
-
-
 import 'package:flutter/material.dart';
 import 'package:expense_tracker/database_helper.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:provider/provider.dart';
+import 'package:expense_tracker/providers/user_provider.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -17,21 +16,35 @@ class _HomePageState extends State<HomePage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _fetchData();
+    _fetchData(context);
   }
 
-  Future<void> _fetchData() async {
-    List<Map<String, dynamic>> expenses = await DatabaseHelper().getExpenses();
-    List<Map<String, dynamic>> incomes = await DatabaseHelper().getIncomes();
+  // Future<void> _fetchData() async {
+  //   List<Map<String, dynamic>> expenses = await DatabaseHelper().getExpenses();
+  //   List<Map<String, dynamic>> incomes = await DatabaseHelper().getIncomes();
 
-    double totalExpense = expenses.fold(0, (sum, item) => sum + item['amount']);
-    double totalIncome = incomes.fold(0, (sum, item) => sum + item['amount']);
+  //   double totalExpense = expenses.fold(0, (sum, item) => sum + item['amount']);
+  //   double totalIncome = incomes.fold(0, (sum, item) => sum + item['amount']);
 
-    setState(() {
-      expense = totalExpense;
-      income = totalIncome;
-    });
-  }
+  //   setState(() {
+  //     expense = totalExpense;
+  //     income = totalIncome;
+  //   });
+  // }
+
+Future<void> _fetchData(BuildContext context) async {
+  int userId = Provider.of<UserProvider>(context, listen: false).userId;
+  List<Map<String, dynamic>> expenses = await DatabaseHelper().getExpenses(userId);
+  List<Map<String, dynamic>> incomes = await DatabaseHelper().getIncomes(userId);
+
+  double totalExpense = expenses.fold(0, (sum, item) => sum + item['amount']);
+  double totalIncome = incomes.fold(0, (sum, item) => sum + item['amount']);
+
+  setState(() {
+    expense = totalExpense;
+    income = totalIncome;
+  });
+}
 
   @override
   Widget build(BuildContext context) {
