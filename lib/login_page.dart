@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:expense_tracker/main_page.dart';
 import 'package:expense_tracker/register_page.dart';
 import 'package:expense_tracker/database_helper.dart';
+import 'package:expense_tracker/providers/user_provider.dart';
 
 class LoginPage extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
@@ -62,8 +65,7 @@ class LoginPage extends StatelessWidget {
                   filled: true,
                   fillColor: Colors.white,
                   labelText: 'Email',
-                  labelStyle: const TextStyle(
-                      color: Colors.black), // Set label text color to black
+                  labelStyle: const TextStyle(color: Colors.black),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -76,8 +78,7 @@ class LoginPage extends StatelessWidget {
                   filled: true,
                   fillColor: Colors.white,
                   labelText: 'Password',
-                  labelStyle: const TextStyle(
-                      color: Colors.black), // Set label text color to black
+                  labelStyle: const TextStyle(color: Colors.black),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -96,9 +97,13 @@ class LoginPage extends StatelessWidget {
                   }
 
                   DatabaseHelper dbHelper = DatabaseHelper();
-                  bool isSuccess = await dbHelper.loginUser(email, password);
+                  int userId = await dbHelper.loginUser(email, password);
 
-                  if (isSuccess) {
+                  if (userId != 0) {
+                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                    await prefs.setString('userId', userId.toString());
+                    Provider.of<UserProvider>(context, listen: false).setUserId(userId);
+                    
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (context) => MainPage()),

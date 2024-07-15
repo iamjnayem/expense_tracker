@@ -116,7 +116,6 @@ class DatabaseHelper {
   Future<int> registerUser(String email, String password) async {
     Database db = await database;
 
-    
     List<Map<String, dynamic>> existingUsers = await db.query(
       'users',
       where: 'email = ?',
@@ -127,11 +126,9 @@ class DatabaseHelper {
       throw Exception('email already exists');
     }
 
-  
     var bytes = utf8.encode(password);
     var hash = sha256.convert(bytes);
 
-    
     Map<String, dynamic> row = {
       'email': email,
       'password': hash.toString(),
@@ -140,20 +137,21 @@ class DatabaseHelper {
     return await db.insert('users', row);
   }
 
-  Future<bool> loginUser(String email, String password) async {
+  Future<int> loginUser(String email, String password) async {
     Database db = await database;
 
-  
     var bytes = utf8.encode(password);
     var hash = sha256.convert(bytes);
 
-    
-    List<Map<String, dynamic>> users = await db.query(
+    List<Map<String, dynamic>> user = await db.query(
       'users',
       where: 'email = ? AND password = ?',
       whereArgs: [email, hash.toString()],
     );
-
-    return users.isNotEmpty;
+    if (user.isNotEmpty) {
+      return user.first['id'];
+    } else {
+      return 0;
+    }
   }
 }
